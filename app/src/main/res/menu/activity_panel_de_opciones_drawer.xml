@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_inicio"
+            android:icon="@drawable/ic_map_white"
+            android:title="Inicio" />
+        <item
+            android:id="@+id/nav_alertas"
+            android:title="Configurar Alertas"
+            android:icon="@drawable/ic_warning_white"/>
+        <item
+            android:id="@+id/nav_configuracion"
+            android:icon="@drawable/ic_settings_white"
+            android:title="Ajustes" />
+    </group>
+
+</menu>

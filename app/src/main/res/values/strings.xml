@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Punto de Apoyo</string>
+    <string name="correo">Correo electrónico</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="inicio">Ingresar</string>
+    <string name="facebook">Ingresar con Facebook</string>
+    <string name="twitter">Ingresar con Twitter</string>
+    <string name="login1">Olvidé mi contraseña</string>
+    <string name="reg">Registrarme</string>
+    <string name="nconfcontraseña">Confirmar contraseña</string>
+    <string name="cyenviar">Confirmar y enviar</string>
+    <string name="bienvenido">¡Bienvenido/a a Punto de Apoyo!</string>
+    <string name="rcorreo">Para recuperar su contraseña debe ingresar el correo con el que se registró</string>
+    <string name="mensajerecuperacion">Se le enviará un correo tan pronto como nos sea posible,muchas gracias.</string>
+    <string name="mapa">Mapa</string>
+    <string name="lista">Lista</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
