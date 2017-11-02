@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 
 import com.cocoahero.android.geojson.GeoJSON;
 import com.cocoahero.android.geojson.GeoJSONObject;
-import com.example.gabriel.puntodeapoyo.Lugares;
 import com.example.gabriel.puntodeapoyo.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -170,11 +169,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 nombres.add(name);
             }
         }
-        String[] stringArray = (String[]) nombres.toArray(new String[0]);
 
-    }
-    public ArrayList getListItems(){
-        return nombres;
     }
 
     public interface OnFragmentInteractionListener {
