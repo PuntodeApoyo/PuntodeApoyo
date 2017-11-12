@@ -130,6 +130,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,15000,0,locListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,15000,0,locListener);
