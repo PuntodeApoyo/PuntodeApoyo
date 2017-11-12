@@ -86,7 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         nGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         miUbicacion();
-        geoJson();
+        leerGeoJson();
 
     }
 
@@ -111,20 +111,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void onLocationChanged(Location location) {
             actualizarUbicacion(location);
         }
-
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
-
         }
-
         @Override
         public void onProviderEnabled(String s) {
-
         }
-
         @Override
         public void onProviderDisabled(String s) {
-
         }
     };
 
@@ -138,10 +132,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         actualizarUbicacion(location);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,15000,0,locListener);
-
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,15000,0,locListener);
     }
 
-    private void geoJson(){
+    private void leerGeoJson(){
         try {
             GeoJsonLayer layer =  new GeoJsonLayer(nGoogleMap, R.raw.map, getContext());
             layer.addLayerToMap();
