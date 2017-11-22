@@ -31,9 +31,6 @@ public class ListFragment extends Fragment {
         String[]menuItems={"Algo","Otro mas",
                             "Otro mas 2",
                             "Otro mas 3"};
-        //Codigo temporal porque es redundante con MapFragment,es solor para probar si funciona
-
-        //Fin del codigo redundante
         ListView listView=(ListView)view.findViewById(R.id.lista);
 
         ArrayAdapter<String> listViewAdapter=new ArrayAdapter<String>(

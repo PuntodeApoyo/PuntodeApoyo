@@ -2,22 +2,28 @@ package com.example.gabriel.puntodeapoyo.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.cocoahero.android.geojson.GeoJSON;
 import com.cocoahero.android.geojson.GeoJSONObject;
+import com.example.gabriel.puntodeapoyo.LocationService;
 import com.example.gabriel.puntodeapoyo.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,18 +59,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     AlertDialog alert =null;
     public ArrayList nombres= new ArrayList();
 
-    //int PERMISOS;
-
-
     public MapFragment() {
-        // Required empty public constructor
-    }
 
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         nView = inflater.inflate(R.layout.fragment_map, container, false);
+        FloatingActionButton button = (FloatingActionButton) nView.findViewById(R.id.alertFAB);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //enviarCoordenadas();
+                getActivity().startService(new Intent(getActivity(), LocationService.class));
+                //Toast.makeText(getActivity(), "Hola estoy funcionando", Toast.LENGTH_SHORT).show();
+            }
+        });
         return nView;
     }
 
@@ -87,6 +96,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         miUbicacion();
         leerGeoJson();
+
+    }
+    public void enviarCoordenadas(){
+        miUbicacion();
+        SmsManager sms = SmsManager.getDefault();
+        String phoneNumber="2634402085";
+        String message="Latitud: "+lat+" longitud: "+lng;
+        sms.sendTextMessage(phoneNumber,null,message,null,null);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+
 
     }
 
@@ -164,6 +184,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 nombres.add(name);
             }
         }
+
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().stopService(new Intent(getActivity(), LocationService.class));
+        nMapView.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        nMapView.onDestroy();
+        super.onDestroyView();
 
     }
 

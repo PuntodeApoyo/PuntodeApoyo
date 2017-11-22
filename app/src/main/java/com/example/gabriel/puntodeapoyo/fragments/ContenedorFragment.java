@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.adapters.SeccionesAdapter;
-import com.example.gabriel.puntodeapoyo.clases.Utilidades;
 
 public class ContenedorFragment extends Fragment {
 
@@ -45,7 +44,6 @@ public class ContenedorFragment extends Fragment {
         // Inflate the layout for this fragment
         vista = inflater.inflate(R.layout.fragment_contenedor, container, false);
 
-        if (Utilidades.rotacion == 0){
             View parent = (View) container.getParent();
             if (appBar == null) {
                 appBar = parent.findViewById(R.id.appBar);
@@ -66,9 +64,6 @@ public class ContenedorFragment extends Fragment {
                 pestanas.setupWithViewPager(viewPager);
             }
             pestanas.setTabGravity(TabLayout.GRAVITY_FILL);
-    }else{
-            Utilidades.rotacion=1;
-        }
         return vista;
     }
 
@@ -90,9 +85,7 @@ public class ContenedorFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(Utilidades.rotacion==0) {
-            appBar.removeView(pestanas);
-        }
+        appBar.removeView(pestanas);
     }
 
     @Override

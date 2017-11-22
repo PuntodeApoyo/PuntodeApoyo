@@ -3,6 +3,8 @@ package com.example.gabriel.puntodeapoyo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,8 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.example.gabriel.puntodeapoyo.clases.Utilidades;
+import android.view.View;
+import android.widget.Toast;
 import com.example.gabriel.puntodeapoyo.fragments.AlertFragment;
 import com.example.gabriel.puntodeapoyo.fragments.ContenedorFragment;
 import com.example.gabriel.puntodeapoyo.fragments.ListFragment;
@@ -26,6 +28,7 @@ public class Panel_de_opcionesActivity extends AppCompatActivity
         ContenedorFragment.OnFragmentInteractionListener,
         MapFragment.OnFragmentInteractionListener,
         ListFragment.OnFragmentInteractionListener{
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +38,14 @@ public class Panel_de_opcionesActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         toolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_background));
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        if(Utilidades.validaPantalla==true){
-            Fragment fragment=new ContenedorFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment).commit();
-            Utilidades.validaPantalla=false;
-        }
+        Fragment fragment=new ContenedorFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment).commit();
 
 
 
@@ -87,6 +86,7 @@ public class Panel_de_opcionesActivity extends AppCompatActivity
         } else if (id == R.id.nav_alertas) {
             miFragment=new AlertFragment();
             fragmentSeleccionado=true;
+            Fragment mapFragment=getSupportFragmentManager().findFragmentById(R.id.map);
 
         } else if (id == R.id.nav_configuracion) {
             miFragment=new SettingsFragment();
@@ -100,6 +100,12 @@ public class Panel_de_opcionesActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        drawer.removeAllViews();
+        super.onDestroy();
     }
 
     @Override
