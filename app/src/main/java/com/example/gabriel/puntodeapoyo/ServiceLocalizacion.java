@@ -5,90 +5,99 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 public class ServiceLocalizacion extends Service {
-    int tiempoEntreActualizaciones=1500;//tiempo en milisegundos
-    int cambioDistanciaParaActualizar=1;//Distancia en metros
-    double lat;//Variable para obtener latitud
-    double lng ;//Variable para obtener longitud
+
+    int tiempoEntreActualizaciones = 1500;//tiempo en milisegundos
+    int cambioDistanciaParaActualizar = 1;//Distancia en metros
+    boolean isProviderEnabled = true;
     public LocationManager locationManager;
-    public final static String MY_ACTION ="OBTENER_UBICACION";
+    VariablesGlobales variables=new VariablesGlobales();
+
 
     LocationListener locListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            miUbicacion();
+            actualizarUbicacion(location);
         }
+
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
         }
+
         @Override
         public void onProviderEnabled(String s) {
         }
+
         @Override
         public void onProviderDisabled(String s) {
+            isProviderEnabled = false;
         }
     };
+
     public ServiceLocalizacion() {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        // Establecer punto de entrada para la API de ubicación
         miUbicacion();
-        MyThread myThread = new MyThread();
-        myThread.start();
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
         return super.onStartCommand(intent, flags, startId);
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        //Limpiar el servicio
+        super.onDestroy();
+    }
 
-    public void miUbicacion() {
+    private void miUbicacion() {
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this
+                , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                tiempoEntreActualizaciones,
-                cambioDistanciaParaActualizar,
-                locListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                tiempoEntreActualizaciones,
-                cambioDistanciaParaActualizar,
-                locListener);
-        if (location != null) {
-            lat = location.getLatitude();
-            lng = location.getLongitude();
-        }
+        actualizarUbicacion(location);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,15000,0,locListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,15000,0,locListener);
     }
-    public class MyThread extends Thread{
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(5000);
-                Intent intent = new Intent();
-                intent.setAction(MY_ACTION);
-                intent.putExtra("Latitud",lat);
-                intent.putExtra("Longitud",lng);
-                sendBroadcast(intent);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+    private void actualizarUbicacion(Location location) {
+        if (location != null) {
+            Toast.makeText(this, "Hola mundo", Toast.LENGTH_SHORT).show();
+            variables.setLatitud(location.getLatitude());
+            variables.setLongitud(location.getLongitude());
         }
     }
 }

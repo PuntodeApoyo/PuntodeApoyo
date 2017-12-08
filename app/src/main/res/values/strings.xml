@@ -14,6 +14,9 @@
     <string name="mensajerecuperacion">Se le enviará un correo tan pronto como nos sea posible,muchas gracias.</string>
     <string name="mapa">Mapa</string>
     <string name="lista">Lista</string>
+    <string name="mensajeUbicacion">Por favor activa la ubicación para continuar con la aplicacion</string>
+    <string name="activarUbicacion">Activar ubicacion</string>
+    <string name="abrirAjustes">Abrir configuracion</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

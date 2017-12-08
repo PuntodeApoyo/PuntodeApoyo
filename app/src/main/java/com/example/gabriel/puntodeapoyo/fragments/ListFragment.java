@@ -22,10 +22,6 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_list, container, false);
-        //String[]menuItems;
-        //listView=view.findViewById(R.id.lista);
-        //ArrayAdapter<String> listViewAdapter;
-        //listView.setAdapter(listViewAdapter );
         return view;
     }
 
@@ -33,16 +29,8 @@ public class ListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         listView=getActivity().findViewById(R.id.lista);
-       // listView.setAdapter(listViewAdapter);
     }
 
-
-    public void recibirTexto(ArrayList texto){
-      //  ArrayAdapter<String> listViewAdapter=
-        //        new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, texto);
-        //listView.setAdapter(listViewAdapter);
-        System.out.println(texto);
-    }
 
 
     public interface OnFragmentInteractionListener {

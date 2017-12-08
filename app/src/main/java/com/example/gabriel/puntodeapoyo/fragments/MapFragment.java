@@ -1,21 +1,21 @@
 package com.example.gabriel.puntodeapoyo.fragments;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.ServiceLocalizacion;
+import com.example.gabriel.puntodeapoyo.VariablesGlobales;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,7 +29,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.geojson.GeoJsonFeature;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.google.maps.android.data.geojson.GeoJsonPointStyle;
+
 import org.json.JSONException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -41,9 +43,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Marker marcador;
     AlertDialog alert =null;
     ArrayList nombres= new ArrayList();
-    double latitud=0.0;
-    double longitud=0.0;
-    MyReceiver myReceiver;
+    public ServiceLocalizacion mService;
+    boolean isProviderEnabled=true;
+    VariablesGlobales variables=new VariablesGlobales();
 
     public MapFragment() {
 
@@ -51,22 +53,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onStart() {
-        //Registrar broadcast
-        myReceiver = new MyReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ServiceLocalizacion.MY_ACTION);
-        getActivity().registerReceiver(myReceiver,intentFilter);
         //Iniciar servicio
         Intent intent=new Intent(getActivity(),ServiceLocalizacion.class);
         getActivity().startService(intent);
         super.onStart();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-       // Intent intent=new Intent(getActivity(),ServiceLocalizacion.class);
-        //getActivity().startService(intent);
     }
 
     @Override
@@ -78,7 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 //enviarCoordenadas();
                 //getActivity().startService(new Intent(getActivity(), LocationService.class));
-                Toast.makeText(getActivity(), "latitud:"+latitud, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "latitud:"+latitud, Toast.LENGTH_SHORT).show();
             }
         });
         return nView;
@@ -87,7 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        nMapView = (MapView) nView.findViewById(R.id.map);
+        nMapView = nView.findViewById(R.id.map);
         if (nMapView != null) {
             nMapView.onCreate(null);
             nMapView.onResume();
@@ -100,6 +90,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         MapsInitializer.initialize(getContext());
         nGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        ServiceLocalizacion mService=new ServiceLocalizacion();
+        agregarMarcador(variables.getLatitud(),variables.getLongitud());
         leerGeoJson();
     }
     public void enviarCoordenadas(){
@@ -111,8 +103,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private void agregarMarcador(double lat, double lng) {
-            LatLng coordenadas = new LatLng(lat, lng);
+    private void agregarMarcador(double lat,double lng) {
+             LatLng coordenadas = new LatLng(lat, lng);
             CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 18);
             if (marcador != null) marcador.remove();
             marcador = nGoogleMap.addMarker(new MarkerOptions().position(coordenadas).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black)));
@@ -172,6 +164,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroyView();
 
     }
+    public void alertDialog(){
+        if (isProviderEnabled==false){
+            AlertDialog.Builder dialog= new AlertDialog.Builder(getActivity());
+            dialog.setTitle(R.string.activarUbicacion)
+            .setMessage(R.string.mensajeUbicacion)
+            .setPositiveButton(R.string.abrirAjustes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+            AlertDialog alerta = dialog.create();
+            alerta.show();
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -182,15 +190,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class MyReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context arg0, Intent arg1) {
-            // TODO Auto-generated method stub
-            latitud=arg1.getDoubleExtra("Latitud",0.0);
-            longitud=arg1.getDoubleExtra("Longitud",0.0);
-            Toast.makeText(getActivity(), "Latitud:"+latitud+"\nLongitud:"+longitud, Toast.LENGTH_SHORT).show();
-            agregarMarcador(latitud,longitud);
-        }
-    }
 }
