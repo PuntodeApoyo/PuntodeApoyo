@@ -10,8 +10,6 @@ import android.widget.ListView;
 
 import com.example.gabriel.puntodeapoyo.R;
 
-import java.util.ArrayList;
-
 public class ListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     ListView listView;

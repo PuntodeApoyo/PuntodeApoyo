@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.example.gabriel.puntodeapoyo.fragments.MapFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -28,7 +29,6 @@ public class ServiceLocalizacion extends Service {
 
     int tiempoEntreActualizaciones = 1500;//tiempo en milisegundos
     int cambioDistanciaParaActualizar = 1;//Distancia en metros
-    boolean isProviderEnabled = true;
     public LocationManager locationManager;
     VariablesGlobales variables=new VariablesGlobales();
 
@@ -49,7 +49,7 @@ public class ServiceLocalizacion extends Service {
 
         @Override
         public void onProviderDisabled(String s) {
-            isProviderEnabled = false;
+            variables.setIsProviderEnabled(false);
         }
     };
 

@@ -23,7 +23,6 @@
         android:clickable="true"
         android:focusable="auto"
         android:src="@drawable/ic_warning_white"
+        app:elevation="14dp"
         app:fabSize="normal" />
-
-
 </FrameLayout>

@@ -12,9 +12,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.gabriel.puntodeapoyo.R;
-import com.example.gabriel.puntodeapoyo.ServiceLocalizacion;
 import com.example.gabriel.puntodeapoyo.VariablesGlobales;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,14 +36,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private static final int PERMISOS = 0;
     GoogleMap nGoogleMap;
     MapView nMapView;
     View nView;
     private Marker marcador;
-    AlertDialog alert =null;
     ArrayList nombres= new ArrayList();
-    public ServiceLocalizacion mService;
     boolean isProviderEnabled=true;
     VariablesGlobales variables=new VariablesGlobales();
 
@@ -53,9 +50,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onStart() {
-        //Iniciar servicio
-        Intent intent=new Intent(getActivity(),ServiceLocalizacion.class);
-        getActivity().startService(intent);
+
         super.onStart();
     }
 
@@ -63,12 +58,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         nView = inflater.inflate(R.layout.fragment_map, container, false);
-        FloatingActionButton button = (FloatingActionButton) nView.findViewById(R.id.alertFAB);
+        FloatingActionButton button = nView.findViewById(R.id.alertFAB);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //enviarCoordenadas();
-                //getActivity().startService(new Intent(getActivity(), LocationService.class));
-                //Toast.makeText(getActivity(), "latitud:"+latitud, Toast.LENGTH_SHORT).show();
+                enviarCoordenadas();
             }
         });
         return nView;
@@ -80,7 +73,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         nMapView = nView.findViewById(R.id.map);
         if (nMapView != null) {
             nMapView.onCreate(null);
-            nMapView.onResume();
             nMapView.getMapAsync(this);
         }
     }
@@ -90,17 +82,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         MapsInitializer.initialize(getContext());
         nGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        ServiceLocalizacion mService=new ServiceLocalizacion();
         agregarMarcador(variables.getLatitud(),variables.getLongitud());
         leerGeoJson();
     }
     public void enviarCoordenadas(){
-       // mService.miUbicacion();
         //SmsManager sms = SmsManager.getDefault();
        // String phoneNumber="2634402085";
-        //String message="Latitud: "+lat+" longitud: "+lng;
         //sms.sendTextMessage(phoneNumber,null,message,null,null);
-        //Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getBaseContext(), "Latitud: "+variables.getLatitud()+"\nLongitud: "+variables.getLongitud(), Toast.LENGTH_SHORT).show();
     }
 
     private void agregarMarcador(double lat,double lng) {
@@ -136,9 +125,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 pointStyle.setTitle("Nombre: "+name);
                 feature.setPointStyle(pointStyle);
                 nombres.add(name);
+                variables.setListaNombres(name);
             }
         }
-        String items="Algo";
     }
 
     @Override
@@ -165,7 +154,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
     public void alertDialog(){
-        if (isProviderEnabled==false){
+        if (!isProviderEnabled){
             AlertDialog.Builder dialog= new AlertDialog.Builder(getActivity());
             dialog.setTitle(R.string.activarUbicacion)
             .setMessage(R.string.mensajeUbicacion)
