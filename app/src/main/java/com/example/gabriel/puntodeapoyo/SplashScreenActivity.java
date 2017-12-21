@@ -19,8 +19,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent=new Intent(this,ServiceLocalizacion.class);
-        startService(intent);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_splash_screen);
         //A partir de aqui chequeo permisos

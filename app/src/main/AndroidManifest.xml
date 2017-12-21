@@ -43,6 +43,11 @@
         <activity
             android:name=".Panel_de_opcionesActivity"
             android:theme="@style/AppTheme" />
+        <receiver android:name=".fragments.MyBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.tutsplus.my.first.broadcast" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:enabled="true"
             android:name=".BootMonitor"
@@ -65,7 +70,7 @@
             android:value="@string/google_maps_key" />
 
         <service
-            android:name=".ServiceLocalizacion"
+            android:name=".LocationUpdaterService"
             android:enabled="true"
             android:exported="true" />
     </application>

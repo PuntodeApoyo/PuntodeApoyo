@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class VariablesGlobales extends Application {
     static double latitud;
     static double longitud;
-    static boolean isProviderEnabled;
-    static ArrayList listaNombres=new ArrayList();
+    public  boolean isProviderEnabled;
+    public static ArrayList listaNombres=new ArrayList();
 
 //Getters and Setters
     public static double getLatitud() {
@@ -23,16 +23,20 @@ public class VariablesGlobales extends Application {
     public static void setLongitud(double longitud) {
         VariablesGlobales.longitud = longitud;
     }
-    public static boolean isIsProviderEnabled() {
+
+    public boolean isProviderEnabled() {
         return isProviderEnabled;
     }
-    public static void setIsProviderEnabled(boolean isProviderEnabled) {
-        VariablesGlobales.isProviderEnabled = isProviderEnabled;
+
+    public void setProviderEnabled(boolean providerEnabled) {
+        isProviderEnabled = providerEnabled;
     }
-    public static ArrayList getListaNombres() {
-        return listaNombres;
-    }
+
     public static void setListaNombres(String s) {
         VariablesGlobales.listaNombres.add(s);
+    }
+
+    public static ArrayList<String> getListaNombres() {
+        return listaNombres;
     }
 }

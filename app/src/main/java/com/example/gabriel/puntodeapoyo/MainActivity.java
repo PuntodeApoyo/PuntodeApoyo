@@ -10,23 +10,26 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button registro,resetPassword,iniciar;
-    EditText usuario,contraseña;
+    private Button registro,
+                    resetPassword,
+                    iniciar;
+    private EditText usuario,
+                    contraseña;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
-        usuario = (EditText)findViewById(R.id.usuario);
+        usuario = findViewById(R.id.usuario);
         usuario.setSelection(0);
-        contraseña = (EditText)findViewById(R.id.contraseña);
+        contraseña = findViewById(R.id.contraseña);
         contraseña.setSelection(0);
-        registro=(Button)findViewById(R.id.registro);
+        registro=findViewById(R.id.registro);
         registro.setOnClickListener(this);
-        resetPassword=(Button)findViewById(R.id.resetPassword);
+        resetPassword=findViewById(R.id.resetPassword);
         resetPassword.setOnClickListener(this);
-        iniciar=(Button)findViewById(R.id.iniciar);
+        iniciar=findViewById(R.id.iniciar);
         iniciar.setOnClickListener(this);
     }
 

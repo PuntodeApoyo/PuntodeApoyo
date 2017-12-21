@@ -18,6 +18,10 @@
     <string name="activarUbicacion">Activar ubicacion</string>
     <string name="abrirAjustes">Abrir configuracion</string>
 
+    <string name="contactosSeleccionados">Contactos seleccionados:</string>
+    <string name="contactosAñadir">Añadir</string>
+    <string name="contactosRemover">Remover</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

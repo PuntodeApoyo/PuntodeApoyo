@@ -12,7 +12,7 @@ import android.content.Intent;
 public class BootMonitor extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent serviceIntent=new Intent(context,ServiceLocalizacion.class);
+        Intent serviceIntent=new Intent(context,LocationUpdaterService.class);
         context.startService(serviceIntent);
     }
 }

@@ -1,8 +1,10 @@
 package com.example.gabriel.puntodeapoyo.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.gabriel.puntodeapoyo.LocationUpdaterService;
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.VariablesGlobales;
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,23 +38,38 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
-    GoogleMap nGoogleMap;
-    MapView nMapView;
-    View nView;
+public class MapFragment extends Fragment implements OnMapReadyCallback{
+    private static final int REQUEST_CHECK_SETTINGS = 2;
+    private static final String REQUESTING_LOCATION_UPDATES_KEY ="true" ;
+    private GoogleMap nGoogleMap;
+    private MapView nMapView;
+    private View nView;
     private Marker marcador;
-    ArrayList nombres= new ArrayList();
-    boolean isProviderEnabled=true;
-    VariablesGlobales variables=new VariablesGlobales();
+    private ArrayList nombres = new ArrayList();
+    private VariablesGlobales variables = new VariablesGlobales();
 
+    IntentFilter intentFilter;
+    LatLng mCurrentLocation;
+
+    public boolean isMapInitialized = false;
     public MapFragment() {
-
     }
 
-    @Override
-    public void onStart() {
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mCurrentLocation=intent.getParcelableExtra("LatLng");
+            Toast.makeText(getActivity().getBaseContext(),"Broadcast iniciado", Toast.LENGTH_SHORT).show();
+            agregarMarcador(mCurrentLocation);
+        }
+    };
 
-        super.onStart();
+    @Override
+    public void onCreate( Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        startService();
+        intentFilter=new IntentFilter("SEND_LOCATION");
+        getActivity().registerReceiver(mReceiver,intentFilter);
     }
 
     @Override
@@ -78,68 +96,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        MapsInitializer.initialize(getContext());
-        nGoogleMap = googleMap;
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        agregarMarcador(variables.getLatitud(),variables.getLongitud());
-        leerGeoJson();
-    }
-    public void enviarCoordenadas(){
-        //SmsManager sms = SmsManager.getDefault();
-       // String phoneNumber="2634402085";
-        //sms.sendTextMessage(phoneNumber,null,message,null,null);
-        Toast.makeText(getActivity().getBaseContext(), "Latitud: "+variables.getLatitud()+"\nLongitud: "+variables.getLongitud(), Toast.LENGTH_SHORT).show();
-    }
-
-    private void agregarMarcador(double lat,double lng) {
-             LatLng coordenadas = new LatLng(lat, lng);
-            CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 18);
-            if (marcador != null) marcador.remove();
-            marcador = nGoogleMap.addMarker(new MarkerOptions().position(coordenadas).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black)));
-            nGoogleMap.animateCamera(miUbicacion);
-    }
-
-    private void leerGeoJson(){
-        try {
-            GeoJsonLayer layer =  new GeoJsonLayer(nGoogleMap, R.raw.map, getContext());
-            layer.addLayerToMap();
-            marcadores(layer);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        return;
-    }
-    public void  marcadores (GeoJsonLayer layer){
-        for (GeoJsonFeature feature : layer.getFeatures()) {//Itera sobre cada elemento del geojson
-            if (feature.hasProperty("name")){
-                String name=feature.getProperty("name");
-                //Crea un nuevo estilo para el punto
-                GeoJsonPointStyle pointStyle = new GeoJsonPointStyle();
-                pointStyle.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda));
-                pointStyle.setTitle("Nombre: "+name);
-                feature.setPointStyle(pointStyle);
-                nombres.add(name);
-                variables.setListaNombres(name);
-            }
-        }
-    }
-
-    @Override
     public void onPause() {
-        nMapView.onPause();
         super.onPause();
+        nMapView.onPause();
     }
 
     @Override
     public void onResume() {
-        nMapView.onResume();
         super.onResume();
+        nMapView.onResume();
     }
 
     @Override
@@ -153,21 +118,92 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onDestroyView();
 
     }
-    public void alertDialog(){
-        if (!isProviderEnabled){
-            AlertDialog.Builder dialog= new AlertDialog.Builder(getActivity());
-            dialog.setTitle(R.string.activarUbicacion)
-            .setMessage(R.string.mensajeUbicacion)
-            .setPositiveButton(R.string.abrirAjustes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                }
-            });
-            AlertDialog alerta = dialog.create();
-            alerta.show();
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        MapsInitializer.initialize(getContext());
+        nGoogleMap = googleMap;
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        leerGeoJson();
+        //agregarMarcador(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
+    }
+
+    public void enviarCoordenadas() {
+        //SmsManager sms = SmsManager.getDefault();
+        // String phoneNumber="2634402085";
+        //sms.sendTextMessage(phoneNumber,null,message,null,null);
+        Toast.makeText(getActivity().getBaseContext(), "Latitud: " + variables.getLatitud() + "\nLongitud: " + variables.getLongitud(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void agregarMarcador(LatLng coordenadas) {
+        CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 18);
+        if (marcador != null) marcador.remove();
+        marcador = nGoogleMap.addMarker(new MarkerOptions().
+                position(coordenadas).
+                icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black)));
+        marcador.setTitle("Posición actual");
+        nGoogleMap.animateCamera(miUbicacion);
+        isMapInitialized = true;
+    }
+
+    private void leerGeoJson() {
+        try {
+            GeoJsonLayer layer = new GeoJsonLayer(nGoogleMap, R.raw.map, getContext());
+            layer.addLayerToMap();
+            marcadores(layer);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+
+        return;
+    }
+
+    public void marcadores(GeoJsonLayer layer) {
+        for (GeoJsonFeature feature : layer.getFeatures()) {//Itera sobre cada elemento del geojson
+            if (feature.hasProperty("name")) {
+                String name = feature.getProperty("name");
+                //Crea un nuevo estilo para el punto
+                GeoJsonPointStyle pointStyle = new GeoJsonPointStyle();
+                pointStyle.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda));
+                pointStyle.setTitle("Nombre: " + name);
+                feature.setPointStyle(pointStyle);
+                nombres.add(name);
+                variables.setListaNombres(name);
+            }
+        }
+    }
+
+
+    public void alertDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle(R.string.activarUbicacion)
+                .setMessage(R.string.mensajeUbicacion)
+                .setPositiveButton(R.string.abrirAjustes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+        AlertDialog alerta = dialog.create();
+        alerta.show();
+    }
+    private void startService()
+    {
+        Intent service = new Intent(getActivity(), LocationUpdaterService.class);
+
+        getActivity().startService(service);
+    }
+
+    private void stopService()
+    {
+        Intent service = new Intent(getActivity(), LocationUpdaterService.class);
+
+        getActivity().stopService(service);
     }
 
     @Override
