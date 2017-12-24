@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.gabriel.puntodeapoyo.Panel_de_opcionesActivity">
+    tools:context="com.example.gabriel.puntodeapoyo.NavigationDrawerActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"

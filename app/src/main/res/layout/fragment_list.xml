@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:id="@+id/listFragment"
     android:layout_height="match_parent"
-    tools:context="com.example.gabriel.puntodeapoyo.fragments.ListFragment">
+    tools:context="com.example.gabriel.puntodeapoyo.Fragments.ListFragment">
     <ListView
         android:id="@+id/lista"
         android:layout_width="match_parent"

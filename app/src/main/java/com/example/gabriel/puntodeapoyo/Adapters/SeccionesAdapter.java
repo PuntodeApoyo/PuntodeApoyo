@@ -1,4 +1,4 @@
-package com.example.gabriel.puntodeapoyo.adapters;
+package com.example.gabriel.puntodeapoyo.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

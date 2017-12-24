@@ -10,14 +10,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import com.example.gabriel.puntodeapoyo.fragments.AlertFragment;
-import com.example.gabriel.puntodeapoyo.fragments.ContenedorFragment;
-import com.example.gabriel.puntodeapoyo.fragments.ListFragment;
-import com.example.gabriel.puntodeapoyo.fragments.MapFragment;
-import com.example.gabriel.puntodeapoyo.fragments.SettingsFragment;
-import com.example.gabriel.puntodeapoyo.fragments.StartFragment;
+import com.example.gabriel.puntodeapoyo.Fragments.AlertFragment;
+import com.example.gabriel.puntodeapoyo.Fragments.ContenedorFragment;
+import com.example.gabriel.puntodeapoyo.Fragments.ListFragment;
+import com.example.gabriel.puntodeapoyo.Fragments.MapFragment;
+import com.example.gabriel.puntodeapoyo.Fragments.SettingsFragment;
+import com.example.gabriel.puntodeapoyo.Fragments.StartFragment;
 
-public class Panel_de_opcionesActivity extends AppCompatActivity
+public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,StartFragment.OnFragmentInteractionListener,AlertFragment.OnFragmentInteractionListener,SettingsFragment.OnFragmentInteractionListener,
         ContenedorFragment.OnFragmentInteractionListener,
         MapFragment.OnFragmentInteractionListener,
@@ -27,7 +27,7 @@ public class Panel_de_opcionesActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_panel_de_opciones);
+        setContentView(R.layout.activity_navigation_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

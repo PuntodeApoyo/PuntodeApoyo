@@ -1,4 +1,4 @@
-package com.example.gabriel.puntodeapoyo.fragments;
+package com.example.gabriel.puntodeapoyo.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,10 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.example.gabriel.puntodeapoyo.LocationUpdaterService;
 import com.example.gabriel.puntodeapoyo.R;
-import com.example.gabriel.puntodeapoyo.VariablesGlobales;
+import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,21 +30,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.geojson.GeoJsonFeature;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 import com.google.maps.android.data.geojson.GeoJsonPointStyle;
-
 import org.json.JSONException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
-    private static final int REQUEST_CHECK_SETTINGS = 2;
-    private static final String REQUESTING_LOCATION_UPDATES_KEY ="true" ;
     private GoogleMap nGoogleMap;
     private MapView nMapView;
     private View nView;
     private Marker marcador;
     private ArrayList nombres = new ArrayList();
-    private VariablesGlobales variables = new VariablesGlobales();
 
     IntentFilter intentFilter;
     LatLng mCurrentLocation;
@@ -59,8 +52,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         @Override
         public void onReceive(Context context, Intent intent) {
             mCurrentLocation=intent.getParcelableExtra("LatLng");
-            Toast.makeText(getActivity().getBaseContext(),"Broadcast iniciado", Toast.LENGTH_SHORT).show();
-            agregarMarcador(mCurrentLocation);
+            myLocationMarker(mCurrentLocation);
         }
     };
 
@@ -125,17 +117,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         nGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         leerGeoJson();
-        //agregarMarcador(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
     }
 
     public void enviarCoordenadas() {
         //SmsManager sms = SmsManager.getDefault();
         // String phoneNumber="2634402085";
         //sms.sendTextMessage(phoneNumber,null,message,null,null);
-        Toast.makeText(getActivity().getBaseContext(), "Latitud: " + variables.getLatitud() + "\nLongitud: " + variables.getLongitud(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getBaseContext(), "Latitud: " + mCurrentLocation.latitude + "\nLongitud: " + mCurrentLocation.longitude, Toast.LENGTH_SHORT).show();
     }
 
-    public void agregarMarcador(LatLng coordenadas) {
+    public void myLocationMarker(LatLng coordenadas) {
         CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 18);
         if (marcador != null) marcador.remove();
         marcador = nGoogleMap.addMarker(new MarkerOptions().
@@ -172,7 +163,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 pointStyle.setTitle("Nombre: " + name);
                 feature.setPointStyle(pointStyle);
                 nombres.add(name);
-                variables.setListaNombres(name);
             }
         }
     }
@@ -195,14 +185,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private void startService()
     {
         Intent service = new Intent(getActivity(), LocationUpdaterService.class);
-
         getActivity().startService(service);
     }
 
     private void stopService()
     {
         Intent service = new Intent(getActivity(), LocationUpdaterService.class);
-
         getActivity().stopService(service);
     }
 

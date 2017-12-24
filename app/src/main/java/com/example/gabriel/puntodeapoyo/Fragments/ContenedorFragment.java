@@ -1,4 +1,4 @@
-package com.example.gabriel.puntodeapoyo.fragments;
+package com.example.gabriel.puntodeapoyo.Fragments;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.gabriel.puntodeapoyo.R;
-import com.example.gabriel.puntodeapoyo.adapters.SeccionesAdapter;
+import com.example.gabriel.puntodeapoyo.Adapters.SeccionesAdapter;
 
 public class ContenedorFragment extends Fragment {
 

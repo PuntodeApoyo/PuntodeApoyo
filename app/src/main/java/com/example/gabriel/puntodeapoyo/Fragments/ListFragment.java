@@ -1,4 +1,4 @@
-package com.example.gabriel.puntodeapoyo.fragments;
+package com.example.gabriel.puntodeapoyo.Fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,13 +12,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.gabriel.puntodeapoyo.R;
-import com.example.gabriel.puntodeapoyo.VariablesGlobales;
 
 import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-    VariablesGlobales variables=new VariablesGlobales();
     public ListFragment() {
     }
 
@@ -37,7 +35,6 @@ public class ListFragment extends Fragment {
     void cargarLugares(View view){
         ArrayList listaNombres=new ArrayList();
         listaNombres.add("Elemento 1");
-        ArrayList<String> arrays=variables.getListaNombres();
 
         ListView placesList=view.findViewById(R.id.lista);
         ArrayAdapter<String> itemsAdapter=

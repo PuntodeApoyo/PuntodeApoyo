@@ -1,4 +1,4 @@
-package com.example.gabriel.puntodeapoyo.fragments;
+package com.example.gabriel.puntodeapoyo.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

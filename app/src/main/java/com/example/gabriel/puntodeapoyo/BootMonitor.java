@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
+
 /**
  * Esta clase fue creada con el objetivo de lanzar el servicio cuando
  * el dispositivo se enciende
