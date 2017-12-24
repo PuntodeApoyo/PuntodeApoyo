@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,6 +23,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_splash_screen);
+        /*Metodo de prueba
+        /
+         */
+        Intent serviceIntent=new Intent(this,JsonReaderService.class);
+        startService(serviceIntent);
         //A partir de aqui chequeo permisos
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -38,7 +45,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             TimerTask t = new TimerTask() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -54,7 +61,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
 
