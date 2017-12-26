@@ -47,11 +47,6 @@
             android:name=".NavigationDrawerActivity"
             android:theme="@style/AppTheme" />
 
-        <receiver android:name=".Fragments.MyBroadcastReceiver">
-            <intent-filter>
-                <action android:name="com.tutsplus.my.first.broadcast" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".BootMonitor"
             android:enabled="true"

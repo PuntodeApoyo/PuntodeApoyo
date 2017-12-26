@@ -23,11 +23,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_splash_screen);
-        /*Metodo de prueba
-        /
-         */
-        Intent serviceIntent=new Intent(this,JsonReaderService.class);
-        startService(serviceIntent);
         //A partir de aqui chequeo permisos
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)

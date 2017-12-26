@@ -1,14 +1,20 @@
 [
     {
       "Id": "1",
-      "Nombre": "El bar de pepe"
+      "Nombre": "El bar de pedro",
+      "Latitud":"-33.1807",
+      "Longitud":"-68.4513"
     },
     {
       "Id": "2",
-      "Nombre": "La comilona"
+      "Nombre": "Supermercado Enzo",
+      "Latitud":"-33.1802",
+      "Longitud":"-68.4525"
     },
     {
       "Id": "3",
-      "Nombre": "Vendedor vendito"
+      "Nombre": "Todo Suelto",
+      "Latitud":"-33.1797",
+      "Longitud":"-68.4524"
     }
 ]

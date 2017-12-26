@@ -11,11 +11,13 @@ import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.example.gabriel.puntodeapoyo.R;
+import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
 import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -33,18 +36,22 @@ import com.google.maps.android.data.geojson.GeoJsonPointStyle;
 import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
     private GoogleMap nGoogleMap;
     private MapView nMapView;
     private View nView;
     private Marker marcador;
-    private ArrayList nombres = new ArrayList();
+    private IntentFilter intentFilter;
+    private IntentFilter locFilter;
+    private LatLng mCurrentLocation;
+    private ArrayList<String> nombres=new ArrayList<>();
+    private ArrayList<String> id=new ArrayList<>();
+    private ArrayList<String> lat=new ArrayList<>();
+    private ArrayList<String> lng=new ArrayList<>();
 
-    IntentFilter intentFilter;
-    LatLng mCurrentLocation;
 
-    public boolean isMapInitialized = false;
     public MapFragment() {
     }
 
@@ -56,12 +63,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         }
     };
 
+    private BroadcastReceiver lugares=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            nombres=intent.getStringArrayListExtra("Nombres");
+            id=intent.getStringArrayListExtra("Ids");
+            lat=intent.getStringArrayListExtra("Latitudes");
+            lng=intent.getStringArrayListExtra("Longitudes");
+            pointsMarkers(lat,lng);
+        }
+    };
+
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startService();
         intentFilter=new IntentFilter("SEND_LOCATION");
         getActivity().registerReceiver(mReceiver,intentFilter);
+        startJsonReader();
     }
 
     @Override
@@ -116,7 +135,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         MapsInitializer.initialize(getContext());
         nGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        leerGeoJson();
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        startJsonReader();
     }
 
     public void enviarCoordenadas() {
@@ -134,39 +154,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black)));
         marcador.setTitle("Posición actual");
         nGoogleMap.animateCamera(miUbicacion);
-        isMapInitialized = true;
     }
-
-    private void leerGeoJson() {
-        try {
-            GeoJsonLayer layer = new GeoJsonLayer(nGoogleMap, R.raw.map, getContext());
-            layer.addLayerToMap();
-            marcadores(layer);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        return;
-    }
-
-    public void marcadores(GeoJsonLayer layer) {
-        for (GeoJsonFeature feature : layer.getFeatures()) {//Itera sobre cada elemento del geojson
-            if (feature.hasProperty("name")) {
-                String name = feature.getProperty("name");
-                //Crea un nuevo estilo para el punto
-                GeoJsonPointStyle pointStyle = new GeoJsonPointStyle();
-                pointStyle.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda));
-                pointStyle.setTitle("Nombre: " + name);
-                feature.setPointStyle(pointStyle);
-                nombres.add(name);
-            }
+    public void pointsMarkers(ArrayList<String>lat,ArrayList<String>lng){
+        for (int i=0;i<lat.size();i++){
+            LatLng latLng=new LatLng(Double.parseDouble(lat.get(i)),Double.parseDouble(lng.get(i)));
+            marcador=nGoogleMap.addMarker(new MarkerOptions().
+                    position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda)));
+            marcador.setTitle(nombres.get(i));
         }
     }
-
 
     public void alertDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -192,6 +188,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     {
         Intent service = new Intent(getActivity(), LocationUpdaterService.class);
         getActivity().stopService(service);
+    }
+    private void startJsonReader(){
+        Intent serviceIntent=new Intent(getActivity(),JsonReaderService.class);
+        getActivity().startService(serviceIntent);
+        locFilter=new IntentFilter("Get places");
+        getActivity().registerReceiver(lugares,locFilter);
+    }
+    private void stopJsonReader(){
+        Intent serviceIntent=new Intent(getActivity(),JsonReaderService.class);
+        getActivity().stopService(serviceIntent);
+        getActivity().unregisterReceiver(lugares);
     }
 
     @Override

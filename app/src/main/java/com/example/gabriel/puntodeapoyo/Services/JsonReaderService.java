@@ -14,6 +14,10 @@ import java.util.ArrayList;
 public class JsonReaderService extends Service {
     ArrayList<String> lugares=new ArrayList<>();
     ArrayList<String> id=new ArrayList<>();
+    ArrayList<String> lat=new ArrayList<>();
+    ArrayList<String> lng=new ArrayList<>();
+
+
     public JsonReaderService() {
     }
 
@@ -21,6 +25,13 @@ public class JsonReaderService extends Service {
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+         super.onStartCommand(intent, flags, startId);
+         sendArrays(id,lugares,lat,lng);
+         return START_STICKY;
     }
 
     @Override
@@ -43,10 +54,14 @@ public class JsonReaderService extends Service {
                 JSONObject obj=jsonArray.getJSONObject(i);
                 lugares.add(obj.getString("Nombre"));
                 id.add(obj.getString("Id"));
+                lat.add(obj.getString("Latitud"));
+                lng.add(obj.getString("Longitud"));
             }
             for (int i=0;i<lugares.size();i++) {
                 Log.i("Id", id.get(i));
                 Log.i("Nombre", lugares.get(i));
+                Log.i("Latitud",lat.get(i));
+                Log.i("Longitud",lng.get(i));
             }
 
         } catch (IOException e) {
@@ -56,5 +71,14 @@ public class JsonReaderService extends Service {
         }
 
 
+    }
+    public void sendArrays(ArrayList id,ArrayList nombre,ArrayList lat,ArrayList lng){
+        Intent i = new Intent("Get places");
+        i.putParcelableArrayListExtra("Nombres",nombre);
+        i.putParcelableArrayListExtra("Ids",id);
+        i.putParcelableArrayListExtra("Latitudes",lat);
+        i.putParcelableArrayListExtra("Longitudes",lng);
+        sendBroadcast(i);
+        Log.i("Estado del broadcast","Enviado");
     }
 }
