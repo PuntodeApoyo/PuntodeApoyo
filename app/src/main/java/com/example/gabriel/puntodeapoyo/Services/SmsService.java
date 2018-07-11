@@ -5,15 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
 import com.example.gabriel.puntodeapoyo.Contact;
 import com.example.gabriel.puntodeapoyo.Data.ContactDAO;
-import com.example.gabriel.puntodeapoyo.Data.ContactsDbHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;

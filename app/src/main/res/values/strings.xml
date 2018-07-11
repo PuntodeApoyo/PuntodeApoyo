@@ -23,7 +23,7 @@
     <string name="contactosSeleccionados">Contactos seleccionados:</string>
     <string name="contactosAñadir">Añadir</string>
     <string name="contactosRemover">Remover</string>
-    <string name="menu_settings">Ajustes</string>
+    <string name="menu_settings">Configurar contactos</string>
     <string name="menu_help">Ayuda</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -2,20 +2,15 @@ package com.example.gabriel.puntodeapoyo.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
 import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
@@ -26,18 +21,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.data.geojson.GeoJsonFeature;
-import com.google.maps.android.data.geojson.GeoJsonLayer;
-import com.google.maps.android.data.geojson.GeoJsonPointStyle;
-import org.json.JSONException;
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
     private GoogleMap nGoogleMap;
@@ -51,10 +40,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private ArrayList<String> id=new ArrayList<>();
     private ArrayList<String> lat=new ArrayList<>();
     private ArrayList<String> lng=new ArrayList<>();
-
-
-    public MapFragment() {
-    }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -185,10 +170,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
 }
