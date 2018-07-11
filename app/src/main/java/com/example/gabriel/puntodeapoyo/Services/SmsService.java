@@ -7,26 +7,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
 import android.os.IBinder;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.gabriel.puntodeapoyo.Contact;
-import com.example.gabriel.puntodeapoyo.ContactsDbHelper;
+import com.example.gabriel.puntodeapoyo.Data.ContactDAO;
+import com.example.gabriel.puntodeapoyo.Data.ContactsDbHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SmsService extends Service {
     private LatLng mCurrentLocation;
     private IntentFilter intentFilter;
     private String latitude=null;
     private String longitude=null;
-    public SmsService() {
-    }
 
     private BroadcastReceiver mBroadcastReceiver=new BroadcastReceiver() {
         //Broadcast para recibir las coordenadas del usuario desde LocationUpdaterService
@@ -64,25 +60,16 @@ public class SmsService extends Service {
     }
 
     public void sendAlert(String message){
-        Cursor c=queryContacts();
-
-        for (c.moveToFirst();!c.isAfterLast();c.moveToNext()){
-            //En este bucle se pasan todos los numeros del cursor hacia una lista
-            String phoneNumber=c.getString(0);
-            SmsManager sms = SmsManager.getDefault();
-            sms.sendTextMessage(phoneNumber,null,message,null,null);
-        }
+        ContactDAO dao= new ContactDAO(getApplicationContext());
+        ArrayList<Contact> contactos= dao.leerTodos();
+        SmsManager sms = SmsManager.getDefault();
+        for (int i=0;i > contactos.size();i++){
+            sms.sendTextMessage(contactos.get(i).getNumber(),null,message,null,null);
+        }//Verificar si sendTextMessage retorna algun valor para verificar
         // String phoneNumber="2634402085";
         //sms.sendTextMessage(phoneNumber,null,message,null,null);
         //Toast.makeText(this, "Servicio iniciado", Toast.LENGTH_SHORT).show();
 
-    }
-    public Cursor queryContacts (){
-        //Este cursor obtiene todos los numeros guardados en la db creada en los ajustes
-        ContactsDbHelper contactsDbHelper=new ContactsDbHelper(this,"Contacts",null,1);
-        SQLiteDatabase database=contactsDbHelper.getWritableDatabase();
-        Cursor data=database.rawQuery("select number from CONTACTS",null);
-        return  data;
     }
     private void startService(){
         Intent service = new Intent(this, LocationUpdaterService.class);

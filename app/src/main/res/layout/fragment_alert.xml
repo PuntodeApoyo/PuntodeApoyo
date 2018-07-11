@@ -24,41 +24,4 @@
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="false"
         android:scrollbars="vertical"></ListView>
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/contacts_fabMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginHorizontal="15dip"
-        android:layout_marginVertical="15dip"
-        app:menu_colorNormal="@color/colorPrimary"
-        app:menu_colorPressed="@color/colorPrimary"
-        app:menu_colorRipple="@color/colorPrimary">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/contacts_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:elevation="22dp"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimary"
-            app:fab_colorRipple="@color/colorPrimary"
-            app:fab_label="@string/contactosRemover"
-            app:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/contacts_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_white_18dp"
-            app:elevation="22dp"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimary"
-            app:fab_colorRipple="@color/colorPrimary"
-            app:fab_label="@string/contactosAñadir"
-            app:fab_size="mini" />
-
-    </com.github.clans.fab.FloatingActionMenu>
-
 </android.support.design.widget.CoordinatorLayout>

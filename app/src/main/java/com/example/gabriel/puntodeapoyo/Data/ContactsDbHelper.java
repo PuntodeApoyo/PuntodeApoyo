@@ -1,4 +1,4 @@
-package com.example.gabriel.puntodeapoyo;
+package com.example.gabriel.puntodeapoyo.Data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

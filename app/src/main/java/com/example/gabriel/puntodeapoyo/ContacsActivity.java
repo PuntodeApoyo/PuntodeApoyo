@@ -1,21 +1,15 @@
 package com.example.gabriel.puntodeapoyo;
 
 import android.Manifest;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,20 +17,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.gabriel.puntodeapoyo.Data.ContactDAO;
 import com.example.gabriel.puntodeapoyo.databinding.ActivityContacsBinding;
-import com.example.gabriel.puntodeapoyo.databinding.ItemAlertListBinding;
-import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class ContacsActivity extends AppCompatActivity implements AdapterCallback {
@@ -82,7 +70,7 @@ public class ContacsActivity extends AppCompatActivity implements AdapterCallbac
     }
     @Override
     public void onItemClick(int position) {//Implementacion onClick personalizada para el recyclerview
-        String name=contactAdapter.mContactos.get(position).name;
+        String name=contactAdapter.mContactos.get(position).getName();
         deleteDialog(name);
     }
 
