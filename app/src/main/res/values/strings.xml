@@ -16,18 +16,28 @@
     <string name="lista">Lista</string>
     <string name="mensajeUbicacion">Por favor activa la ubicación para continuar con la aplicacion</string>
     <string name="activarUbicacion">Activar ubicacion</string>
+    <string name="dialog_tittle">Añadir contacto</string>
     <string name="abrirAjustes">Abrir configuracion</string>
+    <string name="empty_contacts">Aún no has añadido ningún contacto</string>
 
     <string name="contactosSeleccionados">Contactos seleccionados:</string>
     <string name="contactosAñadir">Añadir</string>
     <string name="contactosRemover">Remover</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_help">Ayuda</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="tab_map">Mapa</string>
+    <string name="tab_list">Lista</string>
+    <string name="title_activity_settings">Ajustes</string>
+    <string name="title_activity_contacs">Contactos seleccionados</string>
+    <string name="remove_contact_tittle">Eliminar contacto</string>
+    <string name="remove_contact_message">¿Está seguro que quiere eliminar el contacto seleccionado?</string>
+    <string name="remove_contact_delete">Eliminar</string>
+    <string name="remove_contact_exit">Salir</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="widget_name">Botón PDA</string>
 </resources>

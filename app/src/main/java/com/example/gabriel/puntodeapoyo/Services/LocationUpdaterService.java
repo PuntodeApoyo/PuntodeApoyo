@@ -151,6 +151,7 @@ public class LocationUpdaterService extends Service implements
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         sendResult(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+        Log.d("LocationService ","Ubicacion enviada");
     }
 
     @Override

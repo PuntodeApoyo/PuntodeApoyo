@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
 import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
+import com.example.gabriel.puntodeapoyo.Services.SmsService;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -90,7 +91,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         FloatingActionButton button = nView.findViewById(R.id.alertFAB);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                enviarCoordenadas();
+                Intent intent=new Intent(getActivity(), SmsService.class);
+                getActivity().startService(intent);
             }
         });
         return nView;
@@ -121,6 +123,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onStop() {
         super.onStop();
+        stopService();
     }
 
     @Override
@@ -139,13 +142,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         startJsonReader();
     }
 
-    public void enviarCoordenadas() {
-        //SmsManager sms = SmsManager.getDefault();
-        // String phoneNumber="2634402085";
-        //sms.sendTextMessage(phoneNumber,null,message,null,null);
-        Toast.makeText(getActivity().getBaseContext(), "Latitud: " + mCurrentLocation.latitude + "\nLongitud: " + mCurrentLocation.longitude, Toast.LENGTH_SHORT).show();
-    }
-
     public void myLocationMarker(LatLng coordenadas) {
         CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 18);
         if (marcador != null) marcador.remove();
@@ -162,21 +158,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda)));
             marcador.setTitle(nombres.get(i));
         }
-    }
-
-    public void alertDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setTitle(R.string.activarUbicacion)
-                .setMessage(R.string.mensajeUbicacion)
-                .setPositiveButton(R.string.abrirAjustes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);
-                    }
-                });
-        AlertDialog alerta = dialog.create();
-        alerta.show();
     }
     private void startService()
     {

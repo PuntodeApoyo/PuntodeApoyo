@@ -46,9 +46,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 onPause();
                 break;
             case R.id.iniciar:
-                Intent intent2 = new Intent(LoginActivity.this,NavigationDrawerActivity.class);
-                startActivity(intent2);
-                onPause();
+                //Intent intent2 = new Intent(LoginActivity.this,NavigationDrawerActivity.class);
+                //startActivity(intent2);
+                //onPause();
                 break;
 
         }

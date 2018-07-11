@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.gabriel.puntodeapoyo.MainActivity;
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
 
@@ -28,6 +30,9 @@ public class ListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     ArrayList<String> nombres=new ArrayList<>();
     ListView placesList;
+
+
+
     public ListFragment() {
     }
     private BroadcastReceiver lugares=new BroadcastReceiver() {
@@ -51,6 +56,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_list, container, false);
+
         placesList=view.findViewById(R.id.lista);
         startJsonReader();
         return view;

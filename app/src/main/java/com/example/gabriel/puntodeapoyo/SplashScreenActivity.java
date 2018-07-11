@@ -40,7 +40,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             TimerTask t = new TimerTask() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -56,7 +56,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
 
