@@ -40,4 +40,6 @@
     <string name="remove_contact_exit">Salir</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="widget_name">Botón PDA</string>
+    <string name="searchbar_hint">Busca lugares</string>
+    <string name="tittle_contacts">Contactos</string>
 </resources>

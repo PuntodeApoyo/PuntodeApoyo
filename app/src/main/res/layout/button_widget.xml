@@ -6,7 +6,8 @@
         android:id="@+id/button_widget"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:elevation="10dip"
         android:scaleType="fitCenter"
+        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/widget_preview" />
 </RelativeLayout>

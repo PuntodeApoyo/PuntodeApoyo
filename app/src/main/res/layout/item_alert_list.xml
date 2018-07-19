@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-        <variable name="contact" type="com.example.gabriel.puntodeapoyo.Contact"/>
+        <variable name="contact" type="com.example.gabriel.puntodeapoyo.Model.Contact"/>
     </data>
 
     <LinearLayout

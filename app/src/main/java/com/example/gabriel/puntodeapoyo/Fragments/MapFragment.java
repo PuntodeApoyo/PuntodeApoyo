@@ -1,16 +1,31 @@
 package com.example.gabriel.puntodeapoyo.Fragments;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import com.arlib.floatingsearchview.*;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.gabriel.puntodeapoyo.MainActivity;
 import com.example.gabriel.puntodeapoyo.R;
 import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
 import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
@@ -41,14 +56,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private ArrayList<String> lat=new ArrayList<>();
     private ArrayList<String> lng=new ArrayList<>();
 
+    //Broadcast proveniente de LocationService
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mCurrentLocation=intent.getParcelableExtra("LatLng");
+            if (mCurrentLocation == null){
+                Toast.makeText(context, "Activar Ubicacion", Toast.LENGTH_SHORT).show();
+            }
+            //Log.d("UserLocation","Latitud"+mCurrentLocation.latitude);
             myLocationMarker(mCurrentLocation);
         }
     };
-
+    //Broadcast proveniente de JsonReader
     private BroadcastReceiver lugares=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -80,6 +100,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 getActivity().startService(intent);
             }
         });
+        FloatingSearchView searchView= nView.findViewById(R.id.floating_search_view);
+        searchView.attachNavigationDrawerToMenuButton((DrawerLayout) getActivity().findViewById(R.id.drawerLayout));
+
         return nView;
     }
 
@@ -129,7 +152,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     public void myLocationMarker(LatLng coordenadas) {
         CameraUpdate miUbicacion = CameraUpdateFactory.newLatLngZoom(coordenadas, 18);
-        if (marcador != null) marcador.remove();
+        if (marcador != null)
+            marcador.remove();
         marcador = nGoogleMap.addMarker(new MarkerOptions().
                 position(coordenadas).
                 icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black)));

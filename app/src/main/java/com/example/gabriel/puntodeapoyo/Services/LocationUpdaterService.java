@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,15 +32,10 @@ public class LocationUpdaterService extends Service implements
         LocationListener {
 
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     protected GoogleApiClient mGoogleApiClient;
-
     protected LocationRequest mLocationRequest;
-
     protected Location mCurrentLocation;
-
     protected String mLastUpdateTime;
 
     @Nullable
@@ -107,7 +103,9 @@ public class LocationUpdaterService extends Service implements
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
     }
 
     private void sendResult(LatLng message) {
@@ -129,6 +127,8 @@ public class LocationUpdaterService extends Service implements
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             if (mCurrentLocation != null) {
                 sendResult(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+            }else {
+                Toast.makeText(this, "Ubicacion desactivada,por favor activala", Toast.LENGTH_SHORT).show();
             }
         }
         startLocationUpdates();
@@ -143,7 +143,7 @@ public class LocationUpdaterService extends Service implements
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         sendResult(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
-        Log.d("LocationService ","Ubicacion enviada");
+        //Log.d("LocationService ","Ubicacion enviada");
     }
 
     @Override

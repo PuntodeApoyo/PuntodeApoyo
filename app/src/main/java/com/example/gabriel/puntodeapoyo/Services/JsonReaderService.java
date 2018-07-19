@@ -59,12 +59,12 @@ public class JsonReaderService extends Service {
                 lat.add(obj.getString("Latitud"));
                 lng.add(obj.getString("Longitud"));
             }
-            for (int i=0;i<lugares.size();i++) {
+           /* for (int i=0;i<lugares.size();i++) {
                 Log.i("Id", id.get(i));
                 Log.i("Nombre", lugares.get(i));
                 Log.i("Latitud",lat.get(i));
                 Log.i("Longitud",lng.get(i));
-            }
+            }*/
 
         } catch (IOException e) {
             e.printStackTrace();

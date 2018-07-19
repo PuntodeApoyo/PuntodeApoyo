@@ -6,6 +6,16 @@
     tools:context="com.example.gabriel.puntodeapoyo.Fragments.MapFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dip"
+        app:floatingSearch_searchHint="@string/searchbar_hint"
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        app:floatingSearch_showSearchKey="false"
+        app:floatingSearch_leftActionMode="showHamburger"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/map"
@@ -25,4 +35,5 @@
         android:src="@drawable/ic_warning_white"
         app:elevation="14dp"
         app:fabSize="normal" />
+
 </FrameLayout>

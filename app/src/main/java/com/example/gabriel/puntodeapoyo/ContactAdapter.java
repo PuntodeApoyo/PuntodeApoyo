@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.gabriel.puntodeapoyo.Model.Contact;
 import com.example.gabriel.puntodeapoyo.databinding.ItemAlertListBinding;
 
 import java.util.List;
@@ -14,12 +15,16 @@ import java.util.List;
  * Created by gabii on 02/01/2018.
  */
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder>{
-    List<Contact> mContactos;
+    private List<Contact> mContactos;
     private AdapterCallback onClick;
 
     public ContactAdapter(List<Contact> mContactos) {
             this.mContactos = mContactos;
-        }
+    }
+
+    public List<Contact> getmContactos() {
+        return mContactos;
+    }
 
     @Override
     public ContactHolder onCreateViewHolder(ViewGroup parent, int viewType) {

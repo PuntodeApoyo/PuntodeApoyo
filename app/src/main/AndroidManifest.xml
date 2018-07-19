@@ -75,21 +75,15 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ContacsActivity"
-            android:label="@string/title_activity_contacs"
-            android:theme="@style/AppTheme" />
 
         <receiver
             android:name=".Widgets.ButtonWidget"

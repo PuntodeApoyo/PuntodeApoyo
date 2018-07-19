@@ -5,15 +5,11 @@
         <item
             android:id="@+id/nav_inicio"
             android:icon="@drawable/ic_map_white"
-            android:title="Inicio" />
+            android:title="Mapa" />
         <item
             android:id="@+id/nav_alertas"
-            android:title="Configurar Alertas"
+            android:title="Configurar contactos"
             android:icon="@drawable/ic_warning_white"/>
-        <item
-            android:id="@+id/nav_configuracion"
-            android:icon="@drawable/ic_settings_white"
-            android:title="Ajustes" />
     </group>
 
 </menu>
