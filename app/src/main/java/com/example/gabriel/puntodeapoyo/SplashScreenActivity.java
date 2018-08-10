@@ -1,7 +1,9 @@
 package com.example.gabriel.puntodeapoyo;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -38,8 +40,9 @@ public class SplashScreenActivity extends AppCompatActivity {
             TimerTask t = new TimerTask() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    //Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                    //startActivity(intent);
+                    checkUser();
                     finish();
                 }
             };
@@ -54,14 +57,26 @@ public class SplashScreenActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    //Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                    //startActivity(intent);
+                    checkUser();
                     finish();
 
                 } else {
                 }
                 return;
             }
+        }
+    }
+    public void checkUser(){
+        SharedPreferences preferences=getSharedPreferences("Sesion", Context.MODE_PRIVATE);
+        String mail=preferences.getString("email","");
+        if (mail == ""){
+            Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }else{
+            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+            startActivity(intent);
         }
     }
 }

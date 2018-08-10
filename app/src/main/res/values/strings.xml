@@ -1,4 +1,13 @@
 <resources>
+    <!--Textos correspondientes a la pagina de registro-->
+    <string name="hint_dni">DNI</string>
+    <string name="hint_mail">Correo electronico</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="hint_password_confirm">Confirmar contraseña</string>
+    <string name="txt_btn_submit">Registrarse</string>
+
+
+
     <string name="app_name">Punto de Apoyo</string>
     <string name="correo">Correo electrónico</string>
     <string name="contraseña">Contraseña</string>
@@ -42,4 +51,8 @@
     <string name="widget_name">Botón PDA</string>
     <string name="searchbar_hint">Busca lugares</string>
     <string name="tittle_contacts">Contactos</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
 </resources>

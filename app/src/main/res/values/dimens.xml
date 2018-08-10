@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Dimensiones usadas en la pagina de registro-->
+    <dimen name="register_width">256dp</dimen>
+    <dimen name="register_height">48dp</dimen>
+    <dimen name="register_margin_top">20dip</dimen>
+
     <dimen name="buttonWidth">283dp</dimen>
     <dimen name="buttonHeight">48dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->

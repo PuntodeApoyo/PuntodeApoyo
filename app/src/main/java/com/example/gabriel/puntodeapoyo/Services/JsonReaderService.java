@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class JsonReaderService extends Service {
     ArrayList<String> lugares=new ArrayList<>();
-    ArrayList<String> id=new ArrayList<>();
+    //ArrayList<String> id=new ArrayList<>();
     ArrayList<String> lat=new ArrayList<>();
     ArrayList<String> lng=new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class JsonReaderService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
          super.onStartCommand(intent, flags, startId);
-         sendArrays(id,lugares,lat,lng);
+         sendArrays(lugares,lat,lng);
          return START_STICKY;
     }
 
@@ -55,17 +55,10 @@ public class JsonReaderService extends Service {
             for (int i=0;i<jsonArray.length();i++){
                 JSONObject obj=jsonArray.getJSONObject(i);
                 lugares.add(obj.getString("Nombre"));
-                id.add(obj.getString("Id"));
+               // id.add(obj.getString("Id"));
                 lat.add(obj.getString("Latitud"));
                 lng.add(obj.getString("Longitud"));
             }
-           /* for (int i=0;i<lugares.size();i++) {
-                Log.i("Id", id.get(i));
-                Log.i("Nombre", lugares.get(i));
-                Log.i("Latitud",lat.get(i));
-                Log.i("Longitud",lng.get(i));
-            }*/
-
         } catch (IOException e) {
             e.printStackTrace();
         }catch (JSONException e){
@@ -74,13 +67,13 @@ public class JsonReaderService extends Service {
 
 
     }
-    public void sendArrays(ArrayList id,ArrayList nombre,ArrayList lat,ArrayList lng){
+    public void sendArrays(ArrayList nombre,ArrayList lat,ArrayList lng){
         Intent i = new Intent("Get places");
         i.putParcelableArrayListExtra("Nombres",nombre);
-        i.putParcelableArrayListExtra("Ids",id);
+        //i.putParcelableArrayListExtra("Ids",id);
         i.putParcelableArrayListExtra("Latitudes",lat);
         i.putParcelableArrayListExtra("Longitudes",lng);
         sendBroadcast(i);
-        Log.i("Estado del broadcast","Enviado");
+        stopSelf();
     }
 }

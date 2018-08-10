@@ -75,9 +75,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/AppTheme">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -100,7 +100,8 @@
         <service
             android:name=".Services.SmsService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
     </application>
 
 </manifest>

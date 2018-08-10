@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.gabriel.puntodeapoyo.Model.Contact;
@@ -29,10 +28,8 @@ public class SmsService extends Service {
             mCurrentLocation=intent.getParcelableExtra("LatLng");
             latitude=Double.toString(mCurrentLocation.latitude);
             longitude=Double.toString(mCurrentLocation.longitude);
-            //showToast(latitude,longitude);
             String message="https://www.google.com/maps/search/?api=1&query="+latitude+","+longitude;
             sendAlert(message);
-            stopSelf();
         }
     };
 
@@ -44,7 +41,7 @@ public class SmsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        startService();
+        startLocationService();
         return START_NOT_STICKY;
     }
 
@@ -53,28 +50,21 @@ public class SmsService extends Service {
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
     }
-    public void showToast(String latitude,String longitude){
-        Toast.makeText(this, "Latitud: "+latitude+"\nLongitud: "+longitude, Toast.LENGTH_SHORT).show();
-    }
 
     public void sendAlert(String message){
+        Toast.makeText(this, "Enviando alertas...", Toast.LENGTH_SHORT).show();
         ContactDAO dao= new ContactDAO(getApplicationContext());
         ArrayList<Contact> contactos= dao.leerTodos();
         for (int i=0; i<contactos.size();i++){
             sendSMS(contactos.get(i).getNumber(),message);
-        }//Verificar si sendTextMessage retorna algun valor para verificar
-        // String phoneNumber="2634402085";
-        //sms.sendTextMessage(phoneNumber,null,message,null,null);
-        //Toast.makeText(this, "Servicio iniciado", Toast.LENGTH_SHORT).show();
+        }
         stopSelf();
-        Toast.makeText(this, "Servicio detenido", Toast.LENGTH_SHORT).show();
-
     }
     public void sendSMS(String number,String message){
         SmsManager smsManager= SmsManager.getDefault();
         smsManager.sendTextMessage(number,null,message,null,null);
     }
-    private void startService(){
+    private void startLocationService(){
         Intent service = new Intent(this, LocationUpdaterService.class);
         startService(service);
         intentFilter=new IntentFilter("SEND_LOCATION");

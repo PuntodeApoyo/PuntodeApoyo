@@ -1,35 +1,33 @@
 package com.example.gabriel.puntodeapoyo.Fragments;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import com.arlib.floatingsearchview.*;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.example.gabriel.puntodeapoyo.MainActivity;
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.example.gabriel.puntodeapoyo.R;
-import com.example.gabriel.puntodeapoyo.Services.JsonReaderService;
 import com.example.gabriel.puntodeapoyo.Services.LocationUpdaterService;
 import com.example.gabriel.puntodeapoyo.Services.SmsService;
+import com.example.gabriel.puntodeapoyo.Sugerencias;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,53 +38,41 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback,Response.Listener<JSONObject>,Response.ErrorListener, GoogleMap.OnMarkerClickListener {
     private GoogleMap nGoogleMap;
     private MapView nMapView;
     private View nView;
     private Marker marcador;
-    private IntentFilter intentFilter;
     private IntentFilter locFilter;
+    private IntentFilter intentFilter;
     private LatLng mCurrentLocation;
-    private ArrayList<String> nombres=new ArrayList<>();
-    private ArrayList<String> id=new ArrayList<>();
-    private ArrayList<String> lat=new ArrayList<>();
-    private ArrayList<String> lng=new ArrayList<>();
+    private JsonObjectRequest jsonObjectRequest;
+    private RequestQueue requestQueue;
+    private List<Sugerencias> suger=new ArrayList<>();
+
 
     //Broadcast proveniente de LocationService
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mCurrentLocation=intent.getParcelableExtra("LatLng");
-            if (mCurrentLocation == null){
-                Toast.makeText(context, "Activar Ubicacion", Toast.LENGTH_SHORT).show();
-            }
-            //Log.d("UserLocation","Latitud"+mCurrentLocation.latitude);
             myLocationMarker(mCurrentLocation);
         }
     };
-    //Broadcast proveniente de JsonReader
-    private BroadcastReceiver lugares=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            nombres=intent.getStringArrayListExtra("Nombres");
-            id=intent.getStringArrayListExtra("Ids");
-            lat=intent.getStringArrayListExtra("Latitudes");
-            lng=intent.getStringArrayListExtra("Longitudes");
-            pointsMarkers(lat,lng);
-        }
-    };
-
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startService();
-        intentFilter=new IntentFilter("SEND_LOCATION");
-        getActivity().registerReceiver(mReceiver,intentFilter);
-        startJsonReader();
+
+        requestQueue= Volley.newRequestQueue(getContext());
     }
 
     @Override
@@ -100,9 +86,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 getActivity().startService(intent);
             }
         });
-        FloatingSearchView searchView= nView.findViewById(R.id.floating_search_view);
+        final FloatingSearchView searchView= nView.findViewById(R.id.floating_search_view);
         searchView.attachNavigationDrawerToMenuButton((DrawerLayout) getActivity().findViewById(R.id.drawerLayout));
+        searchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+                if (oldQuery!=newQuery) {
+                    searchView.showProgress();
+                  obtenerSugerencias(newQuery);
+                    searchView.swapSuggestions(suger);
+                    searchView.hideProgress();
+                }
+            }
+        });
+        searchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+                CameraUpdate ubicacion = CameraUpdateFactory.newLatLngZoom(new LatLng(searchSuggestion.getLatitud(),
+                        searchSuggestion.getLongitud()), 18);
+                if (nGoogleMap!=null){
+                    searchView.clearSearchFocus();
+                    nGoogleMap.animateCamera(ubicacion);
+                }
+            }
 
+            @Override
+            public void onSearchAction(String currentQuery) {
+
+            }
+        });
         return nView;
     }
 
@@ -120,12 +132,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void onPause() {
         super.onPause();
         nMapView.onPause();
+        getActivity().unregisterReceiver(mReceiver);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         nMapView.onResume();
+        intentFilter=new IntentFilter("SEND_LOCATION");
+        getActivity().registerReceiver(mReceiver,intentFilter);
     }
 
     @Override
@@ -147,7 +163,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         nGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        startJsonReader();
+        obtenerListaComercios();
+        nGoogleMap.setOnMarkerClickListener(this);
     }
 
     public void myLocationMarker(LatLng coordenadas) {
@@ -160,13 +177,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         marcador.setTitle("Posición actual");
         nGoogleMap.animateCamera(miUbicacion);
     }
-    public void pointsMarkers(ArrayList<String>lat,ArrayList<String>lng){
-        for (int i=0;i<lat.size();i++){
-            LatLng latLng=new LatLng(Double.parseDouble(lat.get(i)),Double.parseDouble(lng.get(i)));
-            marcador=nGoogleMap.addMarker(new MarkerOptions().
-                    position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda)));
-            marcador.setTitle(nombres.get(i));
-        }
+    public void agregarMarcadoresComercios(double lat,double lng,String nombre){
+        Marker itemMarker;
+        LatLng latLng=new LatLng(lat,lng);
+        itemMarker=nGoogleMap.addMarker(new MarkerOptions().
+                                        position(latLng).
+                                        icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pda)));
+        itemMarker.setTitle(nombre);
+        itemMarker.setSnippet("Reputacion: Alta");
+        
     }
     private void startService()
     {
@@ -179,21 +198,92 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         Intent service = new Intent(getActivity(), LocationUpdaterService.class);
         getActivity().stopService(service);
     }
-    private void startJsonReader(){
-        Intent serviceIntent=new Intent(getActivity(),JsonReaderService.class);
-        getActivity().startService(serviceIntent);
-        locFilter=new IntentFilter("Get places");
-        getActivity().registerReceiver(lugares,locFilter);
-    }
-    private void stopJsonReader(){
-        Intent serviceIntent=new Intent(getActivity(),JsonReaderService.class);
-        getActivity().stopService(serviceIntent);
-        getActivity().unregisterReceiver(lugares);
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
+    public void obtenerListaComercios(){
+        String url="https://gabiiascurra.000webhostapp.com/GetPlaces.php";
+        jsonObjectRequest= new JsonObjectRequest(Request.Method.GET,url,null,this,this);
+        requestQueue.add(jsonObjectRequest);
+    }
 
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        Toast.makeText(getActivity().getApplicationContext(), "No se pudo conectar al servidor", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        Log.d("Servicios:","OnResponse iniciado");
+        JSONArray jsonArray=response.optJSONArray("Comercios");
+            try {
+                for (int i=0;i<jsonArray.length();i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String nombre=jsonObject.getString("nombre");
+                    Double lat=jsonObject.getDouble("latitud");
+                    Double lng=jsonObject.getDouble("longitud");
+                    agregarMarcadoresComercios(lat,lng,nombre);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+    //
+    }
+    public void parsearSugerencias(String json){
+        if (json!=null) {
+            Log.i("String recebido", json);
+            try {
+
+                JSONObject object = new JSONObject(json);
+                if (object != null) {
+                    JSONArray array = object.optJSONArray("Comercios");
+                    suger.clear();
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject jsonObject = array.getJSONObject(i);
+                        suger.add(new Sugerencias(jsonObject.getString("nombre"), jsonObject.getDouble("latitud"),
+                                jsonObject.getDouble("longitud")));
+                        Log.i("Nombre", jsonObject.getString("nombre"));
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void obtenerSugerencias(final String query){
+        StringRequest stringRequest;
+        String url="https://gabiiascurra.000webhostapp.com/GetPlacesSuggestions.php";
+        stringRequest= new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                Log.i("Dao","query");
+                Log.i("Respuesta",response);
+                parsearSugerencias(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> parametros=new HashMap<>();
+                parametros.put("query",query);
+                return parametros;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        marker.showInfoWindow();
+        return false;
+    }
 }
